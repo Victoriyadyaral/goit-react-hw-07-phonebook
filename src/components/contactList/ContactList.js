@@ -1,21 +1,23 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import s from "./ContactList.module.css";
 
 import { getVisibleContacts } from '../../redux/selectors';
-import { isLoading } from '../../redux/selectors';
+import contactOperations from '../../redux/operations';
 import ContactListItem from '../contactListItem/ContactListItem';
-import Loader from '../Loader/Loader';
 
 const ContactList = () => {
 
+    const dispatch = useDispatch();
+
+    useEffect(() => dispatch(contactOperations.fetchContacts()), [dispatch]);
+
     const contacts = useSelector(getVisibleContacts);
-    const loading = useSelector(isLoading);
     
     return (
         <ul className={s.contactList}>
-             {loading && <Loader />}
             {contacts.map(({ id, name, number }) => (
                 <ContactListItem
                     key={id}
@@ -24,7 +26,7 @@ const ContactList = () => {
                     number={number}
                 />
             ))}
-        </ul>
+            </ul>
     )
 };
 

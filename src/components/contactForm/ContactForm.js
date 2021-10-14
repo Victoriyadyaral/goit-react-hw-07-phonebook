@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
 import contactOperations from '../../redux/operations';
+import { getContacts } from '../../redux/selectors';
 import shortid from 'shortid';
 import { ImCheckmark } from "react-icons/im";
-import {  toast } from 'react-toastify';
 import s from "./ContactForm.module.css";
 
 function ContactForm() {
@@ -15,6 +16,7 @@ function ContactForm() {
   const phoneNumberInputId = shortid.generate();
 
   const dispatch = useDispatch();
+  const contacts = useSelector(getContacts);
 
   const handleInputChange = (event) => {
     const { name, value } = event.currentTarget;
@@ -33,9 +35,9 @@ function ContactForm() {
     }
   };
 
-  const handleSubmit = () => {
-    //event.preventDefault();
-    console.log(name, number)
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    
     if (name === '') {
       toast.warn("Please enter the contact's name!");
       return;
@@ -46,7 +48,14 @@ function ContactForm() {
       return;
     }
 
+    if (contacts.find(contact => contact.name === name)) {
+      toast.warn(`${name} is already in contacts.`);
+      reset();
+      return;
+    }
+
     dispatch(contactOperations.addContact(name, number));
+    toast.success('Contact has been added to your phonebook!');
     reset();
     };
 
@@ -65,7 +74,7 @@ function ContactForm() {
             className={s.input}
             value={name}
             onChange = {handleInputChange}
-            required
+            //required
             id={nameInputId}
             autoComplete = "off"
           />
@@ -79,7 +88,7 @@ function ContactForm() {
             className={s.input}
             value={number}
             onChange = {handleInputChange}
-            required
+            //required
             id={phoneNumberInputId}
             autoComplete = "off"
         />       
@@ -88,7 +97,7 @@ function ContactForm() {
           <button
           className={s.button}
           type="submit"
-          disabled={name === '' || number === ''}
+          //disabled={name === '' || number === ''}
           >
             Add contact  <ImCheckmark color="rgb(11, 100, 11)" size="30px"/>
           </button>
