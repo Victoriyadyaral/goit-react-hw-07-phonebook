@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { ImBin, ImRadioChecked2 } from "react-icons/im";
-import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import contactsOperations from '../../redux/operations';
 import s from "./ContactListItem.module.css";
@@ -9,10 +8,6 @@ import s from "./ContactListItem.module.css";
 const ContactListItem = ({ id, name, number }) => {
 
     const dispatch = useDispatch();
-
-    useEffect(() => {
-    dispatch(contactsOperations.fetchContacts());
-    }, [dispatch]);
     
     const onDeleteContact = id => dispatch(contactsOperations.deleteContact(id));
 
